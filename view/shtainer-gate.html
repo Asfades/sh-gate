@@ -1,0 +1,87 @@
+<!Doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <video width="320" height="240" controls>
+    </video>
+
+    <input type="file">
+
+
+<!-- libraries -->
+    <script src="/dash.all.min.js"></script>
+    <!-- scripts -->
+    <script>
+        var inp = document.querySelector('input'),
+            player = document.querySelector('video'),
+            file, reader;
+        
+        inp.addEventListener('change', (e) => {
+            file = e.target.files[0];
+            console.log('file: ', file);
+            if(file) {
+                reader.readAsDataURL(file);
+            }
+        }, false);
+
+        reader = new FileReader();
+        var res;
+        reader.addEventListener('load', function() {
+            res = reader.result;
+
+            player.src = res;
+        });
+        
+        //
+        //Dash js quick start : 
+        //
+
+        var dashPl = dashjs.MediaPlayer().create();
+
+        //dashPl.initialize(player, 'http://dash.edgesuite.net/envivio/EnvivioDash3/manifest.mpd', true);
+
+        /*var listener = new WebSocket('wss://');
+        listener.addEventListener('message', function (e) {
+            var data = JSON.parse(e.data);
+            switch (data.action) {
+                case 'play': player.play();
+                    break;
+                case 'pause': player.pause();
+                    break;
+                case 'volume': player.volume(data.action.prop);
+                    break;
+                case 'move': player.currentTime = data.action.time;
+                default: console.log('Non registered action');
+            }
+        })
+        var player = document.querySelector('video');
+        player.addEventListener('canplay', function (e) {
+            var can = new WebSocket('wss://#');
+            can.onerror = function (e) {
+
+            }
+            can.onmessage = function (e) {
+                console.log('can -- returned data: ', e.data);
+            }
+            can.send('Player is ready');
+        });
+        player.addEventListener('error', function (e) {
+            console.log('An error occured: ', e);
+        });
+
+
+        var socket = new WebSocket('wss://dfee9492.ngrok.io');
+        socket.onmessage = function (e) {
+            console.log(e);
+        }*/
+    </script>
+</body>
+
+</html>
