@@ -1,0 +1,86 @@
+<!Doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div style="width: auto; margin: 0 auto;">
+        <iframe id="yt-player" style="display:block;margin: 0 auto;" width="853" height="480" src="https://www.youtube.com/embed/h2vgcLT9nVo?enablejsapi=1"
+            frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <!-- scripts -->
+    <script>
+        //START LOADING API
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        //END LOADING API
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            console.log('Player is ready!');
+        }
+
+        function onPlayerStateChange(e) {
+            switch (e.data) {
+                case 1:
+                    var data = {
+                        action: 1,
+                        currentTime: player.getCurrentTime()
+                    }
+                    listener.send(JSON.stringify(data));
+                    break;
+                case 2: 
+                    var data = {
+                        action: 2,
+                        currentTime: player.getCurrentTime()
+                    }
+                    listener.send(JSON.stringify(data));
+            }
+        }
+
+        function onPlayerError(e) {
+            console.log('An error occured, code: ', e.data);
+        }
+
+        var listener = new WebSocket('ws://host');
+        listener.addEventListener('message', function (e) {
+            //All data in data JSON object
+            var data = JSON.parse(e.data);
+            switch (data.action) {
+                case 1:
+                    player.seekTo(data.currentTime);
+                    player.playVideo();
+                    console.log('playing');
+                    break;
+                case 2:
+                    player.pauseVideo();
+                    player.seekTo(data.currentTime);
+                    console.log('paused');
+                    break;
+                default:
+                    console.log('default action does nothing');
+            }
+        });
+    </script>
+</body>
+
+</html>
