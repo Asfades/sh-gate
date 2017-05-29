@@ -1,8 +1,7 @@
-var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({port: 8080});
-wss.on('connection', function(ws) {
-    ws.on('message', function(message) {
-        console.log('received: %s', message);
-    });
-    ws.send('something');
+var express = require('express');
+var app = express();
+var expressWs = require('express-ws')(app);
+
+app.use(function(req, res, next) {
+    console.log('middleware');
 });
